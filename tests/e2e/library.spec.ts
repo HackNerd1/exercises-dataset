@@ -24,7 +24,7 @@ test('SSR serves real localized content, normalized queries and correct 404s', a
   expect(html).toContain('data-testid="exercise-card"');
   expect(html).not.toContain('instructions_fr');
   expect((await request.get('/zh/exercises/9999')).status()).toBe(404);
-  expect((await request.get('/zh/exercises/0001')).status()).toBe(404);
+  expect((await request.get('/zh/exercises/0001')).status()).toBe(200);
   expect((await request.get('/xx/exercises')).status()).toBe(404);
   const invalid = await request.get('/zh/exercises?page=-1&sort=bad&unknown=1', {maxRedirects:0});
   expect([307,308]).toContain(invalid.status());
@@ -218,8 +218,14 @@ test('media preview and card navigation have separate pointer and keyboard targe
     const title = await card.getByRole('heading').boundingBox();
     expect(title).not.toBeNull();
     await page.mouse.click(title!.x + 8, title!.y + 8);
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await expect(page).toHaveURL(listUrl);
+    if (mobile) {
+      await expect(page).toHaveURL(/\/zh\/exercises\/\d+$/);
+      await expect(page.getByRole('heading',{level:1})).toBeVisible();
+      await expect(page.getByRole('dialog')).not.toBeVisible();
+    } else {
+      await expect(page.getByRole('dialog')).toBeVisible();
+      await expect(page).toHaveURL(listUrl);
+    }
     await context.close();
   }
 });

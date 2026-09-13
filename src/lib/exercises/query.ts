@@ -1,4 +1,4 @@
-import {filterKeys, type ExerciseQuery, type Facets, type SearchParams} from './types';
+import { filterKeys, type ExerciseQuery, type Facets, type SearchParams } from './types';
 
 export function toSearchParams(input: SearchParams): URLSearchParams {
   const result = new URLSearchParams();

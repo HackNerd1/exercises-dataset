@@ -1,4 +1,4 @@
-import type {Locale} from '@/i18n/config';
+import type { Locale } from '@/i18n/config';
 export type Exercise = {
   id: string; name: string; category: string; body_part: string; equipment: string;
   target: string; muscle_group: string; secondary_muscles: string[];

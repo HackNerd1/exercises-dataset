@@ -1,4 +1,4 @@
-import {filterKeys, type Exercise, type ExerciseQuery} from './types';
+import { filterKeys, type Exercise, type ExerciseQuery } from './types';
 
 export function filterExercises(exercises: Exercise[], query: ExerciseQuery, labels: Record<string, string> = {}) {
   const term = query.q.toLocaleLowerCase();
