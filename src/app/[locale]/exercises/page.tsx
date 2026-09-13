@@ -122,7 +122,10 @@ export default async function ExercisesPage({ params, searchParams }: Props) {
                 </Link>
               </Button>
             ) : (
-              <span />
+              <Button variant="outline" disabled aria-disabled="true">
+                <ArrowLeft />
+                {t("previous")}
+              </Button>
             )}
             <span className="text-xs text-muted-foreground">
               {query.page} / {pages}
@@ -135,7 +138,10 @@ export default async function ExercisesPage({ params, searchParams }: Props) {
                 </Link>
               </Button>
             ) : (
-              <span />
+              <Button variant="outline" disabled aria-disabled="true">
+                {t("next")}
+                <ArrowRight />
+              </Button>
             )}
           </nav>
         </section>
