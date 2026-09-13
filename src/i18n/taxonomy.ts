@@ -1,0 +1,101 @@
+import {locales, type Locale} from './config';
+
+// Columns follow config.locales. Source keys remain stable in URLs and stored data.
+// These are curated UI labels; exercise names and instructions use their own data.
+const rows = [
+  ['back', 'Espalda', 'Schiena', 'Sırt', 'Спина', '背部', 'पीठ', 'Plecy', '등', 'Dos'],
+  ['cardio', 'Cardio', 'Cardio', 'Kardiyo', 'Кардио', '有氧运动', 'कार्डियो', 'Kardio', '유산소 운동', 'Cardio'],
+  ['chest', 'Pecho', 'Petto', 'Göğüs', 'Грудь', '胸部', 'छाती', 'Klatka piersiowa', '가슴', 'Poitrine'],
+  ['lower arms', 'Antebrazos', 'Avambracci', 'Ön kollar', 'Предплечья', '前臂', 'अग्रबाहु', 'Przedramiona', '아래팔', 'Avant-bras'],
+  ['lower legs', 'Parte inferior de las piernas', 'Parte inferiore delle gambe', 'Alt bacaklar', 'Голени', '小腿', 'पिंडलियाँ', 'Podudzia', '종아리', 'Bas des jambes'],
+  ['neck', 'Cuello', 'Collo', 'Boyun', 'Шея', '颈部', 'गर्दन', 'Szyja', '목', 'Cou'],
+  ['shoulders', 'Hombros', 'Spalle', 'Omuzlar', 'Плечи', '肩部', 'कंधे', 'Barki', '어깨', 'Épaules'],
+  ['upper arms', 'Brazos', 'Braccia', 'Üst kollar', 'Верхняя часть рук', '上臂', 'ऊपरी बाँहें', 'Ramiona', '위팔', 'Bras'],
+  ['upper legs', 'Muslos', 'Cosce', 'Üst bacaklar', 'Бёдра', '大腿', 'जाँघें', 'Uda', '허벅지', 'Cuisses'],
+  ['waist', 'Cintura', 'Vita', 'Bel', 'Талия', '腰腹', 'कमर', 'Talia', '허리', 'Taille'],
+  ['assisted', 'Asistido', 'Assistito', 'Destekli', 'С поддержкой', '辅助器械', 'सहायता के साथ', 'Ze wspomaganiem', '보조 기구', 'Avec assistance'],
+  ['band', 'Banda elástica', 'Elastico', 'Elastik bant', 'Эластичная лента', '弹力带', 'इलास्टिक बैंड', 'Taśma elastyczna', '탄력 밴드', 'Bande élastique'],
+  ['barbell', 'Barra', 'Bilanciere', 'Halter', 'Штанга', '杠铃', 'बारबेल', 'Sztanga', '바벨', 'Barre'],
+  ['body weight', 'Peso corporal', 'Corpo libero', 'Vücut ağırlığı', 'Собственный вес', '自重', 'शरीर का वजन', 'Masa ciała', '맨몸', 'Poids du corps'],
+  ['bosu ball', 'Bosu', 'Bosu', 'Bosu topu', 'Полусфера BOSU', '波速球', 'बोसु बॉल', 'Piłka BOSU', '보수 볼', 'Bosu'],
+  ['cable', 'Polea', 'Cavo', 'Kablo', 'Блочный тренажёр', '绳索器械', 'केबल', 'Wyciąg', '케이블', 'Poulie'],
+  ['dumbbell', 'Mancuerna', 'Manubrio', 'Dambıl', 'Гантель', '哑铃', 'डम्बल', 'Hantel', '덤벨', 'Haltère'],
+  ['elliptical machine', 'Elíptica', 'Ellittica', 'Eliptik bisiklet', 'Эллиптический тренажёр', '椭圆机', 'एलिप्टिकल मशीन', 'Orbitrek', '일립티컬 머신', 'Vélo elliptique'],
+  ['ez barbell', 'Barra EZ', 'Bilanciere EZ', 'Z bar', 'EZ-штанга', '曲杆杠铃', 'ईज़ी बारबेल', 'Sztanga łamana', '이지바', 'Barre EZ'],
+  ['hammer', 'Martillo', 'Martello', 'Balyoz', 'Кувалда', '训练锤', 'हथौड़ा', 'Młot', '해머', 'Masse'],
+  ['kettlebell', 'Pesa rusa', 'Kettlebell', 'Kettlebell', 'Гиря', '壶铃', 'केटलबेल', 'Odważnik kettlebell', '케틀벨', 'Kettlebell'],
+  ['leverage machine', 'Máquina de palanca', 'Macchina a leva', 'Kaldıraçlı makine', 'Рычажный тренажёр', '杠杆器械', 'लीवर मशीन', 'Maszyna dźwigniowa', '레버리지 머신', 'Machine à levier'],
+  ['medicine ball', 'Balón medicinal', 'Palla medica', 'Sağlık topu', 'Медицинбол', '药球', 'मेडिसिन बॉल', 'Piłka lekarska', '메디신 볼', 'Médecine-ball'],
+  ['olympic barbell', 'Barra olímpica', 'Bilanciere olimpico', 'Olimpik halter', 'Олимпийская штанга', '奥林匹克杠铃', 'ओलंपिक बारबेल', 'Sztanga olimpijska', '올림픽 바벨', 'Barre olympique'],
+  ['resistance band', 'Banda de resistencia', 'Banda di resistenza', 'Direnç bandı', 'Лента сопротивления', '阻力带', 'रेज़िस्टेंस बैंड', 'Guma oporowa', '저항 밴드', 'Bande de résistance'],
+  ['roller', 'Rodillo', 'Rullo', 'Rulo', 'Ролик', '滚筒', 'रोलर', 'Wałek', '롤러', 'Rouleau'],
+  ['rope', 'Cuerda', 'Corda', 'İp', 'Канат', '绳索', 'रस्सी', 'Lina', '로프', 'Corde'],
+  ['skierg machine', 'Ergómetro de esquí', 'Ergometro da sci', 'Kayak ergometresi', 'Лыжный эргометр', '滑雪机', 'स्की एर्गोमीटर', 'Ergometr narciarski', '스키 에르그', 'Ergomètre de ski'],
+  ['sled machine', 'Máquina de trineo', 'Macchina a slitta', 'Kızak makinesi', 'Салазочный тренажёр', '滑橇器械', 'स्लेड मशीन', 'Maszyna saneczkowa', '슬레드 머신', 'Machine à chariot'],
+  ['smith machine', 'Máquina Smith', 'Multipower', 'Smith makinesi', 'Тренажёр Смита', '史密斯机', 'स्मिथ मशीन', 'Suwnica Smitha', '스미스 머신', 'Machine Smith'],
+  ['stability ball', 'Pelota de estabilidad', 'Palla di stabilità', 'Denge topu', 'Фитбол', '健身球', 'स्टेबिलिटी बॉल', 'Piłka gimnastyczna', '짐볼', 'Ballon de stabilité'],
+  ['stationary bike', 'Bicicleta estática', 'Cyclette', 'Kondisyon bisikleti', 'Велотренажёр', '固定自行车', 'स्थिर साइकिल', 'Rower stacjonarny', '실내 자전거', 'Vélo d’appartement'],
+  ['stepmill machine', 'Máquina de escaleras', 'Macchina per scale', 'Merdiven makinesi', 'Лестничный тренажёр', '爬楼机', 'सीढ़ी चढ़ने की मशीन', 'Schody treningowe', '스텝밀', 'Escalier mécanique'],
+  ['tire', 'Neumático', 'Pneumatico', 'Lastik', 'Покрышка', '轮胎', 'टायर', 'Opona', '타이어', 'Pneu'],
+  ['trap bar', 'Barra hexagonal', 'Bilanciere esagonale', 'Heksagonal bar', 'Трэп-гриф', '六角杠铃', 'हेक्स बार', 'Sztanga heksagonalna', '트랩바', 'Barre hexagonale'],
+  ['upper body ergometer', 'Ergómetro de brazos', 'Ergometro per le braccia', 'Kol ergometresi', 'Ручной эргометр', '上肢功率车', 'ऊपरी शरीर का एर्गोमीटर', 'Ergometr ręczny', '상체 에르고미터', 'Ergomètre à bras'],
+  ['weighted', 'Con peso adicional', 'Con sovraccarico', 'Ek ağırlıklı', 'С отягощением', '负重', 'अतिरिक्त वजन के साथ', 'Z obciążeniem', '중량 추가', 'Avec charge'],
+  ['wheel roller', 'Rueda abdominal', 'Ruota per addominali', 'Karın tekerleği', 'Гимнастическое колесо', '健腹轮', 'एब व्हील', 'Kółko do ćwiczeń', '복근 롤러', 'Roue abdominale'],
+  ['abductors', 'Abductores', 'Abduttori', 'Abdüktörler', 'Отводящие мышцы', '外展肌', 'अपवर्तक मांसपेशियाँ', 'Odwodziciele', '외전근', 'Abducteurs'],
+  ['abs', 'Abdominales', 'Addominali', 'Karın kasları', 'Мышцы пресса', '腹肌', 'पेट की मांसपेशियाँ', 'Mięśnie brzucha', '복근', 'Abdominaux'],
+  ['adductors', 'Aductores', 'Adduttori', 'Addüktörler', 'Приводящие мышцы', '内收肌', 'अभिवर्तक मांसपेशियाँ', 'Przywodziciele', '내전근', 'Adducteurs'],
+  ['biceps', 'Bíceps', 'Bicipiti', 'Biseps', 'Бицепс', '肱二头肌', 'बाइसेप्स', 'Bicepsy', '이두근', 'Biceps'],
+  ['calves', 'Pantorrillas', 'Polpacci', 'Baldır kasları', 'Икроножные мышцы', '小腿肌群', 'पिंडली की मांसपेशियाँ', 'Łydki', '종아리 근육', 'Mollets'],
+  ['cardiovascular system', 'Sistema cardiovascular', 'Sistema cardiovascolare', 'Kalp ve damar sistemi', 'Сердечно-сосудистая система', '心血管系统', 'हृदयवाहिनी तंत्र', 'Układ sercowo-naczyniowy', '심혈관계', 'Système cardiovasculaire'],
+  ['delts', 'Deltoides', 'Deltoidi', 'Deltoid kasları', 'Дельтовидные мышцы', '三角肌', 'डेल्टॉइड', 'Mięśnie naramienne', '삼각근', 'Deltoïdes'],
+  ['forearms', 'Antebrazos', 'Avambracci', 'Ön kol kasları', 'Мышцы предплечья', '前臂肌群', 'अग्रबाहु की मांसपेशियाँ', 'Mięśnie przedramion', '전완근', 'Avant-bras'],
+  ['glutes', 'Glúteos', 'Glutei', 'Kalça kasları', 'Ягодичные мышцы', '臀肌', 'नितंब की मांसपेशियाँ', 'Mięśnie pośladkowe', '둔근', 'Fessiers'],
+  ['hamstrings', 'Isquiotibiales', 'Ischiocrurali', 'Arka uyluk kasları', 'Задняя группа мышц бедра', '腘绳肌', 'हैमस्ट्रिंग', 'Mięśnie kulszowo-goleniowe', '햄스트링', 'Ischio-jambiers'],
+  ['lats', 'Dorsales anchos', 'Gran dorsali', 'Geniş sırt kasları', 'Широчайшие мышцы спины', '背阔肌', 'लैटिसिमस डॉर्सी', 'Mięśnie najszersze grzbietu', '광배근', 'Grands dorsaux'],
+  ['levator scapulae', 'Elevador de la escápula', 'Elevatore della scapola', 'Kürek kemiği kaldırıcı kası', 'Мышца, поднимающая лопатку', '肩胛提肌', 'लेवेटर स्कैपुला', 'Dźwigacz łopatki', '견갑거근', 'Élévateur de la scapula'],
+  ['pectorals', 'Pectorales', 'Pettorali', 'Göğüs kasları', 'Грудные мышцы', '胸肌', 'वक्ष की मांसपेशियाँ', 'Mięśnie piersiowe', '대흉근', 'Pectoraux'],
+  ['quads', 'Cuádriceps', 'Quadricipiti', 'Kuadriseps', 'Квадрицепс', '股四头肌', 'क्वाड्रिसेप्स', 'Mięśnie czworogłowe uda', '대퇴사두근', 'Quadriceps'],
+  ['serratus anterior', 'Serrato anterior', 'Dentato anteriore', 'Ön dişli kas', 'Передняя зубчатая мышца', '前锯肌', 'सेराटस एंटीरियर', 'Mięsień zębaty przedni', '전거근', 'Dentelé antérieur'],
+  ['spine', 'Columna vertebral', 'Colonna vertebrale', 'Omurga', 'Позвоночник', '脊柱', 'रीढ़', 'Kręgosłup', '척추', 'Colonne vertébrale'],
+  ['traps', 'Trapecios', 'Trapezi', 'Trapez kasları', 'Трапециевидные мышцы', '斜方肌', 'ट्रेपेज़ियस', 'Mięśnie czworoboczne', '승모근', 'Trapèzes'],
+  ['triceps', 'Tríceps', 'Tricipiti', 'Triseps', 'Трицепс', '肱三头肌', 'ट्राइसेप्स', 'Tricepsy', '삼두근', 'Triceps'],
+  ['upper back', 'Espalda alta', 'Parte alta della schiena', 'Üst sırt', 'Верхняя часть спины', '上背部', 'ऊपरी पीठ', 'Górna część pleców', '등 상부', 'Haut du dos'],
+  ['ankle stabilizers', 'Estabilizadores del tobillo', 'Stabilizzatori della caviglia', 'Ayak bileği dengeleyici kasları', 'Стабилизаторы голеностопа', '踝关节稳定肌', 'टखने की स्थिरकारी मांसपेशियाँ', 'Stabilizatory stawu skokowego', '발목 안정근', 'Stabilisateurs de la cheville'],
+  ['ankles', 'Tobillos', 'Caviglie', 'Ayak bilekleri', 'Голеностопы', '脚踝', 'टखने', 'Stawy skokowe', '발목', 'Chevilles'],
+  ['brachialis', 'Braquial', 'Brachiale', 'Brakiyalis', 'Плечевая мышца', '肱肌', 'ब्रैकियालिस', 'Mięsień ramienny', '상완근', 'Brachial'],
+  ['core', 'Zona central', 'Muscoli del tronco', 'Merkez bölge kasları', 'Мышцы кора', '核心肌群', 'कोर की मांसपेशियाँ', 'Mięśnie tułowia', '코어', 'Muscles du tronc'],
+  ['feet', 'Pies', 'Piedi', 'Ayaklar', 'Стопы', '足部', 'पैर', 'Stopy', '발', 'Pieds'],
+  ['grip muscles', 'Músculos de agarre', 'Muscoli della presa', 'Kavrama kasları', 'Мышцы хвата', '握力肌群', 'पकड़ की मांसपेशियाँ', 'Mięśnie chwytu', '악력 근육', 'Muscles de préhension'],
+  ['groin', 'Ingle', 'Inguine', 'Kasık', 'Пах', '腹股沟', 'ऊसन्धि', 'Pachwina', '서혜부', 'Aine'],
+  ['hands', 'Manos', 'Mani', 'Eller', 'Кисти', '手部', 'हाथ', 'Dłonie', '손', 'Mains'],
+  ['hip flexors', 'Flexores de la cadera', 'Flessori dell’anca', 'Kalça fleksörleri', 'Сгибатели бедра', '髋屈肌', 'कूल्हे की फ्लेक्सर मांसपेशियाँ', 'Zginacze biodra', '고관절 굴근', 'Fléchisseurs de la hanche'],
+  ['inner thighs', 'Cara interna de los muslos', 'Interno cosce', 'İç uyluklar', 'Внутренняя часть бёдер', '大腿内侧', 'भीतरी जाँघें', 'Wewnętrzna część ud', '허벅지 안쪽', 'Intérieur des cuisses'],
+  ['lower abs', 'Abdominales inferiores', 'Addominali inferiori', 'Alt karın kasları', 'Нижняя часть пресса', '下腹肌', 'निचले पेट की मांसपेशियाँ', 'Dolna część mięśni brzucha', '하복근', 'Bas des abdominaux'],
+  ['lower back', 'Espalda baja', 'Zona lombare', 'Alt sırt', 'Поясница', '下背部', 'निचली पीठ', 'Dolna część pleców', '등 하부', 'Bas du dos'],
+  ['obliques', 'Oblicuos', 'Obliqui', 'Yan karın kasları', 'Косые мышцы живота', '腹斜肌', 'पेट की तिरछी मांसपेशियाँ', 'Mięśnie skośne brzucha', '복사근', 'Obliques'],
+  ['rear deltoids', 'Deltoides posteriores', 'Deltoidi posteriori', 'Arka deltoidler', 'Задние дельтовидные мышцы', '三角肌后束', 'पिछले डेल्टॉइड', 'Tylne części mięśni naramiennych', '후면 삼각근', 'Deltoïdes postérieurs'],
+  ['rhomboids', 'Romboides', 'Romboidi', 'Romboid kasları', 'Ромбовидные мышцы', '菱形肌', 'रॉम्बॉइड', 'Mięśnie równoległoboczne', '능형근', 'Rhomboïdes'],
+  ['rotator cuff', 'Manguito rotador', 'Cuffia dei rotatori', 'Rotator manşet', 'Вращательная манжета плеча', '肩袖肌群', 'रोटेटर कफ', 'Stożek rotatorów', '회전근개', 'Coiffe des rotateurs'],
+  ['shins', 'Espinillas', 'Stinchi', 'Kaval kemiği bölgesi', 'Передняя часть голеней', '胫部', 'पिंडली का अगला भाग', 'Przednia część podudzi', '정강이', 'Avant des jambes'],
+  ['soleus', 'Sóleo', 'Soleo', 'Soleus', 'Камбаловидная мышца', '比目鱼肌', 'सोलियस', 'Mięsień płaszczkowaty', '가자미근', 'Soléaire'],
+  ['sternocleidomastoid', 'Esternocleidomastoideo', 'Sternocleidomastoideo', 'Sternokleidomastoid', 'Грудино-ключично-сосцевидная мышца', '胸锁乳突肌', 'स्टर्नोक्लीडोमैस्टॉइड', 'Mięsień mostkowo-obojczykowo-sutkowy', '흉쇄유돌근', 'Sterno-cléido-mastoïdien'],
+  ['upper chest', 'Pecho superior', 'Parte alta del petto', 'Üst göğüs', 'Верхняя часть груди', '上胸部', 'ऊपरी छाती', 'Górna część klatki piersiowej', '가슴 상부', 'Haut des pectoraux'],
+  ['wrist extensors', 'Extensores de la muñeca', 'Estensori del polso', 'El bileği ekstansörleri', 'Разгибатели запястья', '腕伸肌', 'कलाई की प्रसारक मांसपेशियाँ', 'Prostowniki nadgarstka', '손목 신근', 'Extenseurs du poignet'],
+  ['wrist flexors', 'Flexores de la muñeca', 'Flessori del polso', 'El bileği fleksörleri', 'Сгибатели запястья', '腕屈肌', 'कलाई की संकुचक मांसपेशियाँ', 'Zginacze nadgarstka', '손목 굴근', 'Fléchisseurs du poignet'],
+  ['wrists', 'Muñecas', 'Polsi', 'El bilekleri', 'Запястья', '手腕', 'कलाइयाँ', 'Nadgarstki', '손목', 'Poignets'],
+] satisfies [string, string, string, string, string, string, string, string, string, string][];
+
+const aliases: Record<string, string> = {
+  abdominals: 'abs', deltoids: 'delts', 'latissimus dorsi': 'lats',
+  quadriceps: 'quads', trapezius: 'traps',
+};
+
+/** Returns localized labels keyed by the unchanged English dataset values. */
+export function getTaxonomy(locale: Locale): Record<string, string> {
+  const column = locales.indexOf(locale);
+  const labels: Record<string, string> = Object.fromEntries(rows.map(row => [row[0], row[column]]));
+  for (const [alias, source] of Object.entries(aliases)) {
+    labels[alias] = locale === 'en' ? alias : labels[source];
+  }
+  return labels;
+}

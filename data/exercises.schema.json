@@ -61,6 +61,24 @@
           "description": "Full exercise name (e.g. \"3/4 sit-up\").",
           "minLength": 1
         },
+        "names": {
+          "type": "object",
+          "description": "Localized exercise names; name remains the original English name.",
+          "required": ["en", "es", "it", "tr", "ru", "zh", "hi", "pl", "ko", "fr"],
+          "properties": {
+            "en": { "type": "string", "minLength": 1 },
+            "es": { "type": "string", "minLength": 1 },
+            "it": { "type": "string", "minLength": 1 },
+            "tr": { "type": "string", "minLength": 1 },
+            "ru": { "type": "string", "minLength": 1 },
+            "zh": { "type": "string", "minLength": 1 },
+            "hi": { "type": "string", "minLength": 1 },
+            "pl": { "type": "string", "minLength": 1 },
+            "ko": { "type": "string", "minLength": 1 },
+            "fr": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
         "category": {
           "type": "string",
           "description": "Body part category. Mirrors body_part.",
@@ -139,6 +157,7 @@
       "required": [
         "id",
         "name",
+        "names",
         "category",
         "body_part",
         "equipment",

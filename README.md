@@ -1,3 +1,62 @@
+# Next.js Exercise Library
+
+This repository now includes a **Next.js App Router application with request-time SSR**, URL-based search and filtering, ten-language UI and exercise instructions, and a shadcn UI built on the Tailwindadmin token system.
+
+## Run locally
+
+Requires Node.js **24.x** and pnpm **11.9.0** (pinned in package.json).
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+Open `http://localhost:3000/en/exercises` or `http://localhost:3000/zh/exercises`.
+
+```sh
+pnpm check          # ESLint, TypeScript, unit tests
+pnpm build          # validate dataset, sync assets, production build
+pnpm start
+pnpm exec playwright install chromium --only-shell
+pnpm test:e2e       # production build required; starts a server if needed
+```
+
+The production build uses Next.js Webpack for reproducible builds in restricted build environments. App Router and SSR behavior are unchanged. Development uses the default Next.js dev server.
+
+## Deploy on Vercel
+
+1. Import this repository with Framework Preset **Next.js**, Root Directory `.` and Node.js **24.x**.
+2. Install using `pnpm install --frozen-lockfile`; Build Command `pnpm build`. Keep Next.js's default output directory; do not use static export.
+3. Set `NEXT_PUBLIC_SITE_URL` to your production HTTPS domain. `.env.example` lists the setting. Vercel's production domain is used as a fallback; localhost is only a local fallback.
+4. Deploy a Preview and verify `/zh/exercises?equipment=barbell`, the exercise detail drawer, images and `/api/exports/sql?db=sqlite`. Removed setup and standalone HTML routes must return HTTP 404.
+5. Preview deployments emit `noindex` and a disallow-all robots file. Verify production canonical/hreflang and sitemap after assigning the domain, then promote the verified deployment. Roll back using Vercel's prior deployment.
+
+`data/exercises.json` is traced into server functions and read once per warm process. Media are copied to `public` at build time and served as static assets, not imported into SSR functions. SQL exports stream from a Node.js Route Handler. Runtime does not write to the deployment filesystem. Check the actual Vercel account's deployment size, function and streaming limits in Preview; remote deployment has not been performed as part of the local refactor.
+
+## Routes and data
+
+- `/[locale]/exercises`: SSR list. Query keys: `q`, repeated `category`, `equipment`, `target`, `page`, `pageSize` (24/48/96), `sort` (name-asc/name-desc).
+- Exercise details open in a drawer from the list, preserving its URL and filters. IDs keep their leading zeros.
+- `/api/exports/sql?db=postgresql`: streaming download; also supports mysql/sqlite/mssql. This does not execute SQL or connect to a database.
+
+The SSR list uses real pagination, a native GET search form, and immediately applied multi-select tag links. Filters are grouped above the results; mobile tag rows scroll horizontally. There is no apply button, and tags also work without JavaScript. Exercise names use the `names` map for all ten locales, with an English fallback; `name` retains the original English source. Search matches both original and translated names. UI and 85 equipment/body/muscle labels are translated, with existing localized instructions. The non-English names were machine-translated using Google Translate and common Chinese fitness terms were reviewed. Translations require native-speaker editorial review before a formal multilingual release.
+
+Edit `data/exercises.json` and add matching files under `images/` and `videos/`, then rebuild/redeploy. `prebuild` validates the JSON Schema, duplicate IDs and all media paths before syncing public assets. Do not edit generated `public/images`, `public/videos` or `public/data` directly. Original dataset/README asset paths are preserved.
+
+## UI and localization
+
+- `src/app/css/globals.css`: shared Tailwindadmin token source (`:root`, `.dark`, Tailwind 4 theme mappings).
+- `src/components/ui`: reused shadcn/Radix components; source license and import hashes in `docs/vendor/tailwindadmin`.
+- `src/components/theme-provider.tsx`: next-themes, light/dark/system preference.
+- `messages/{locale}.json`: global UI messages; `src/i18n/taxonomy.ts`: stable source values mapped to localized labels.
+- `src/i18n/config.ts`: supported locales. To add one, add its messages and taxonomy, update config and test the instruction fallback. Keep URL/data keys stable.
+
+The language comes from the URL, not browser storage. Changing language preserves the current route and valid query. Theme preference is independent of language. Only interactive components hydrate; the full dataset and all instruction languages are never sent to the browser automatically.
+
+---
+
+Dataset documentation follows.
+
 <div align="center">
 
 # 💪 Exercises Dataset
@@ -33,7 +92,7 @@
 - 1,324 exercises with category, body-part, equipment, target and muscle-group data
 - an animation GIF + 180×180 thumbnail for every exercise (media © [Gym visual](https://gymvisual.com/) — see [License](#-license--use))
 - step-by-step instructions in 10 languages (🇬🇧 English, 🇪🇸 Spanish, 🇮🇹 Italian, 🇹🇷 Turkish, 🇷🇺 Russian, 🇨🇳 Chinese, 🇮🇳 Hindi, 🇵🇱 Polish, 🇰🇷 Korean, 🇫🇷 French)
-- the interactive browser (`index.html`) and developer setup guide (`setup.html`)
+- the Next.js exercise browser and streaming SQL export
 
 ---
 
@@ -41,7 +100,6 @@
 
 - [Data Source](#-data-source)
 - [Overview](#-overview)
-- [Interactive Browser & Developer Setup](#-interactive-browser--developer-setup)
 - [File Structure](#-file-structure)
 - [Statistics](#-statistics)
 - [Data Schema](#-data-schema)
@@ -76,30 +134,6 @@ Each exercise entry contains:
 
 ---
 
-## 🖥️ Interactive Browser & Developer Setup
-
-This repository includes two ready-to-use HTML tools — no server required, just open in a browser.
-
-> **Note:** the browser displays each exercise's 180×180 thumbnail and animation GIF alongside its metadata and instructions.
-
-### `index.html` — Exercise Browser
-
-A fully client-side exercise explorer with:
-- Live search across all 1,324 exercises
-- Filter by category, equipment, and target muscle
-- Infinite scroll grid
-- Click any card to see full details and instructions in English, Spanish, Italian, Turkish, Russian, Chinese, Hindi, Polish, Korean, or French
-
-### `setup.html` — Developer Setup Guide
-
-A step-by-step guide for integrating the dataset into your own application:
-
-1. **Database Setup** — `CREATE TABLE` SQL for SQL Server, PostgreSQL, MySQL, and SQLite. Generate a ready-to-run `.sql` file with all 1,324 INSERT statements, built entirely in your browser.
-2. **API Integration** — Copy-paste client code in **JavaScript, Python, C#, Java, PHP, Go, and cURL** showing how to call your backend API. Enter your base URL and all examples update live.
-3. **Ask Your LLM** — A structured prompt (choose your framework + database) that you can paste into ChatGPT, Claude, or Gemini to generate a complete, production-ready REST API in one shot. Supports Express.js, FastAPI, ASP.NET Core, Spring Boot, Laravel, and Gin.
-
----
-
 ## 📂 File Structure
 
 ```
@@ -109,8 +143,10 @@ exercises-dataset/
 │   └── exercises.schema.json # JSON Schema (2020-12) describing every record
 ├── images/                  # 1,324 × 180×180 thumbnails  (© Gym visual)
 ├── videos/                  # 1,324 × 180×180 animation GIFs  (© Gym visual)
-├── index.html               # Interactive exercise browser (client-side, no server needed)
-├── setup.html               # Developer setup guide (DB import + API integration)
+├── src/app/                 # Next.js routes, layouts and SQL export endpoint
+├── src/features/exercises/  # Search, filters, media and detail drawer
+├── src/lib/exports/         # SQL generation and supported databases
+├── messages/                # Localized UI messages
 ├── NOTICE.md                # Media attribution & license terms
 └── README.md
 ```
@@ -120,8 +156,6 @@ exercises-dataset/
 - **`data/exercises.json`** — The primary data file. A JSON array of 1,324 exercise objects with all metadata. `image` / `gif_url` point to the local 180×180 assets, and each record carries an `attribution` field; `media_id` holds the original media reference id.
 - **`data/exercises.schema.json`** — A [JSON Schema](https://json-schema.org/) (Draft 2020-12) that formally describes every field, its type and constraints. Use it to validate the dataset or your own additions with any standard JSON Schema validator.
 - **`images/`, `videos/`** — 180×180 thumbnails and animation GIFs (© [Gym visual](https://gymvisual.com/), used with permission).
-- **`index.html`** — Standalone exercise browser. Open directly in any modern browser.
-- **`setup.html`** — Developer guide for DB setup, API integration, and LLM-assisted backend generation.
 - **`LICENSE`, `NOTICE.md`** — MIT (code/data) + the Gym visual media terms.
 
 ---
@@ -176,7 +210,8 @@ Each record in `data/exercises.json` follows this structure. A machine-readable 
 | Field | Type | Description |
 |---|---|---|
 | `id` | `string` | Unique numeric identifier (e.g. `"0001"`) |
-| `name` | `string` | Full exercise name (e.g. `"3/4 Sit-up"`) |
+| `name` | `string` | Original English exercise name (e.g. `"3/4 sit-up"`) |
+| `names` | `object` | Localized names for `en`, `es`, `it`, `tr`, `ru`, `zh`, `hi`, `pl`, `ko`, `fr`; also included as JSON in SQL exports |
 | `category` | `string` | Body part category (e.g. `"upper arms"`, `"chest"`, `"back"`) |
 | `body_part` | `string` | Same as `category` — body part targeted |
 | `equipment` | `string` | Required equipment (e.g. `"dumbbell"`, `"body weight"`) |
@@ -446,7 +481,7 @@ console.log("First 6 exercises:", randomWorkout.map(e => e.name));
 
 ## 📄 License & Use
 
-This repository is a **developer setup wizard and structured exercise dataset** — exercise metadata, multilingual instruction translations, and 180×180 exercise media.
+This repository is a **exercise browser and structured exercise dataset** — exercise metadata, multilingual instruction translations, and 180×180 exercise media.
 
 - **Code, tooling, dataset structure, and instruction text** are released under the [MIT License](LICENSE).
 - **Exercise media (images & GIFs) is © [Gym visual](https://gymvisual.com/)** and redistributed here **with permission**, at 180×180 resolution — see [`NOTICE.md`](NOTICE.md) and the media exception in [`LICENSE`](LICENSE). Keep the `© Gym visual — https://gymvisual.com/` attribution intact. Reuse is governed by [Gym visual's Terms & Conditions](https://gymvisual.com/content/3-terms-and-conditions-of-use); obtain your own license there before reusing the media.

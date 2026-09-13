@@ -6,3 +6,21 @@ __pycache__/
 
 # Claude Code local settings (do not publish)
 .claude/
+
+# Next.js and generated assets
+node_modules/
+.next/
+public/images/
+public/videos/
+public/data/
+public/NOTICE.md
+public/LICENSE
+*.tsbuildinfo
+next-env.d.ts
+.env*
+!.env.example
+.vercel/
+playwright-report/
+test-results/
+
+.pnpm-store/
