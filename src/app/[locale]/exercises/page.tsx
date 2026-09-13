@@ -112,7 +112,7 @@ export default async function ExercisesPage({ params, searchParams }: Props) {
           )}
           <nav
             aria-label={t("page", { current: query.page, total: pages })}
-            className="mt-8 flex items-center justify-between border-t border-border pt-6"
+            className="flex items-center justify-between pt-6"
           >
             {query.page > 1 ? (
               <Button asChild variant="outline">

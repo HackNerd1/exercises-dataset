@@ -24,7 +24,7 @@ const languageFlags: Record<Locale, string> = {
 const themeIcons = { light: Sun, dark: Moon, system: Monitor };
 const triggerClass = cn(
   buttonVariants({ variant: "lightprimary", size: "icon", shape: "pill" }),
-  "shrink-0 justify-center rounded-full border-0 p-0 shadow-none dark:bg-lightprimary dark:hover:bg-primary data-[size=default]:h-10 [&_svg:not([class*=text-])]:text-current",
+  "h-9 w-9 shrink-0 justify-center rounded-full border-0 p-0 shadow-none dark:bg-lightprimary dark:hover:bg-primary data-[size=default]:h-9 data-[size=default]:w-9 sm:h-10 sm:w-10 sm:data-[size=default]:h-10 sm:data-[size=default]:w-10 [&_svg:not([class*=text-])]:text-current",
 );
 
 const subscribe = () => () => {};
@@ -45,7 +45,7 @@ export function Preferences() {
   const currentTheme = mounted && theme && theme in themeIcons ? (theme as keyof typeof themeIcons) : "system";
   const ThemeIcon = themeIcons[currentTheme];
   return (
-    <div className="flex shrink-0 items-center gap-2">
+    <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
       <Select
         value={locale}
         onValueChange={(next) => {
@@ -60,7 +60,7 @@ export function Preferences() {
           showChevron={false}
           className={triggerClass}
         >
-          <span aria-hidden="true" className="text-2xl leading-none">
+            <span aria-hidden="true" className="text-xl leading-none sm:text-2xl">
             {languageFlags[locale as Locale]}
           </span>
         </SelectTrigger>

@@ -30,17 +30,17 @@ export default async function LocaleLayout({
         {t("skip")}
       </a>
       <header className="fixed top-0 z-[2] w-full bg-white shadow-md dark:bg-dark">
-        <div className="mx-auto flex h-18 max-w-[1480px] items-center justify-between gap-3 px-2 py-4 sm:px-6">
-          <Link href={`/${locale}/exercises`} className="flex min-w-0 items-center gap-3 rounded-lg">
-            <Dumbbell aria-hidden="true" className="size-7 shrink-0 text-primary" />
-            <span className="truncate text-lg font-semibold tracking-tight">{t("brand")}</span>
+        <div className="mx-auto flex h-14 max-w-[1480px] items-center justify-between gap-2 px-3 sm:h-18 sm:gap-3 sm:px-6 sm:py-4">
+          <Link href={`/${locale}/exercises`} className="flex min-w-0 items-center gap-2 rounded-lg sm:gap-3">
+            <Dumbbell aria-hidden="true" className="size-6 shrink-0 text-primary sm:size-7" />
+            <span className="truncate text-base font-semibold tracking-tight sm:text-lg">{t("brand")}</span>
           </Link>
           <Preferences />
         </div>
       </header>
       <main
         id="main"
-        className="scroll-smooth scroll-mt-18 mx-auto mt-18 min-h-[75vh] max-w-[1480px] px-4 py-8 sm:px-8 lg:px-10"
+        className="scroll-smooth scroll-mt-14 mx-auto mt-14 min-h-[75vh] max-w-[1480px] px-4 py-6 sm:scroll-mt-18 sm:mt-18 sm:px-8 sm:py-8 lg:px-10"
       >
         {children}
       </main>
